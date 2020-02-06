@@ -16,8 +16,20 @@ var AD_DESCRIPTIONS = ['Строка с описанием 1', 'Строка с 
 var AD_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var LOCATION_HEIGHT_MIN = 130;
 var LOCATION_HEIGHT_MAX = 630;
+var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
 var pin = document.querySelector('#pin').content.querySelector('.map__pin');
+var card = document.querySelector('#card').content.querySelector('.map__card');
+var featuresBlock = document.querySelector('#card').content.querySelector('.popup__features');
+var photosBlock = document.querySelector('#card').content.querySelector('.popup__photos');
+
+var offetTypeMap = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
 
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -44,15 +56,15 @@ var getRelatedAdArray = function () {
     relatedAd.author.avatar = 'img/avatars/user0' + (i + 1) + '.png';
     relatedAd.offer.title = AD_TITLES[getRandomNumber(MIN_NUMBER, AD_TITLES.length)];
     relatedAd.offer.address = AD_LOCATIONS_X[getRandomNumber(MIN_NUMBER, AD_LOCATIONS_X.length)] + ', ' + AD_LOCATIONS_Y[getRandomNumber(MIN_NUMBER, AD_LOCATIONS_Y.length)];
-    relatedAd.offer.price = AD_PRICES[getRandomNumber(MIN_NUMBER, AD_PRICES.length)] + 'P/ночь';
+    relatedAd.offer.price = AD_PRICES[getRandomNumber(MIN_NUMBER, AD_PRICES.length)] + '₽/ночь';
     relatedAd.offer.type = AD_TYPES[getRandomNumber(MIN_NUMBER, AD_TYPES.length)];
     relatedAd.offer.rooms = AD_ROOMS[getRandomNumber(MIN_NUMBER, AD_ROOMS.length)];
     relatedAd.offer.guests = AD_GUESTS[getRandomNumber(MIN_NUMBER, AD_GUESTS.length)];
     relatedAd.offer.checkin = AD_CHECKIN_TIME[getRandomNumber(MIN_NUMBER, AD_CHECKIN_TIME.length)];
     relatedAd.offer.checkout = AD_CHECKOUT_TIME[getRandomNumber(MIN_NUMBER, AD_CHECKOUT_TIME.length)];
-    relatedAd.offer.features = getRandomLengthArray(AD_FEATURES, getRandomNumber(MIN_NUMBER + 1, AD_FEATURES.length));
+    relatedAd.offer.features = getRandomLengthArray(AD_FEATURES, getRandomNumberArbitrary(MIN_NUMBER, AD_FEATURES.length));
     relatedAd.offer.description = AD_DESCRIPTIONS[getRandomNumber(MIN_NUMBER, AD_DESCRIPTIONS.length)];
-    relatedAd.offer.photos = getRandomLengthArray(AD_PHOTOS, getRandomNumberArbitrary(MIN_NUMBER + 1, AD_PHOTOS.length));
+    relatedAd.offer.photos = AD_PHOTOS;
     relatedAd.location.x = getRandomNumber(50, document.querySelector('.map').offsetWidth);
     relatedAd.location.y = getRandomNumber(LOCATION_HEIGHT_MIN, LOCATION_HEIGHT_MAX);
 
@@ -72,6 +84,48 @@ var renderPin = function (pinAd) {
   return relatedAdPin;
 };
 
+featuresBlock.innerHTML = '';
+var getFeaturesArray = function (arr, tag, class1, class2) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < arr.length; i++) {
+    var featuresElement = document.createElement(tag);
+    featuresElement.classList.add(class1, class2 + arr[i]);
+    fragment.appendChild(featuresElement);
+  }
+  return fragment;
+};
+
+photosBlock.innerHTML = '';
+var getPhotosArray = function (arr, tag, classElement) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < arr.length; i++) {
+    var featuresElement = document.createElement(tag);
+    featuresElement.classList.add(classElement);
+    featuresElement.src = arr[i];
+    featuresElement.width = '45';
+    featuresElement.height = '40';
+    fragment.appendChild(featuresElement);
+  }
+  return fragment;
+};
+
+var renderRelatedAd = function (cardAd) {
+  var relatedAdCard = card.cloneNode(true);
+
+  relatedAdCard.querySelector('.popup__title').textContent = cardAd.offer.title;
+  relatedAdCard.querySelector('.popup__text--address').textContent = cardAd.offer.address;
+  relatedAdCard.querySelector('.popup__text--price').textContent = cardAd.offer.price;
+  relatedAdCard.querySelector('.popup__type').textContent = offetTypeMap[cardAd.offer.type];
+  relatedAdCard.querySelector('.popup__text--capacity').textContent = cardAd.offer.rooms + ' комнаты для ' + cardAd.offer.guests + ' гостей';
+  relatedAdCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + cardAd.offer.checkin + ', выезд до ' + cardAd.offer.checkout;
+  relatedAdCard.querySelector('.popup__features').appendChild(getFeaturesArray(cardAd.offer.features, 'li', 'popup__feature', 'popup__feature--'));
+  relatedAdCard.querySelector('.popup__description').textContent = cardAd.offer.description;
+  relatedAdCard.querySelector('.popup__photos').appendChild(getPhotosArray(cardAd.offer.photos, 'img', 'popup__photo'));
+  relatedAdCard.querySelector('.popup__avatar').src = cardAd.author.avatar;
+
+  return relatedAdCard;
+};
+
 var createRelatedAdBlock = function (arr) {
   var fragment = document.createDocumentFragment();
 
@@ -81,6 +135,8 @@ var createRelatedAdBlock = function (arr) {
 
   return fragment;
 };
+
+map.insertBefore(renderRelatedAd(getRelatedAdArray()[0]), mapFiltersContainer);
 
 mapPins.appendChild(createRelatedAdBlock(getRelatedAdArray()));
 
