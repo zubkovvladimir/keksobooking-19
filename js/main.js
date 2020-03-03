@@ -22,10 +22,14 @@ var ROOMS_NUMBER_MAX = 100;
 var GUESTS_MIN = 1;
 var GUESTS_MAX = 6;
 
-var ENTER_KEY = 'Enter';
 var ERROR_TEXT_ROOMS = 'Выбранное количество комнат не соответствует выбранному количеству гостей';
+var ERROR_TEXT_PRICE = 'Цена должна быть меньше 1 000 000';
 
 var PRICE_MAX = 1000000;
+
+var ENTER_KEY = 'Enter';
+var ESCAPE_KEY = 'Escape';
+var MOUSE_BUTTON_LEFT_CODE = 0;
 
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
@@ -43,6 +47,9 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 
 var adForm = document.querySelector('.ad-form');
 var formFieldset = adForm.querySelectorAll('fieldset');
+var selectTimeIn = adForm.querySelector('#timein');
+var selectTimeOut = adForm.querySelector('#timeout');
+var containerTimeinTimeout = adForm.querySelector('.ad-form__element--time');
 
 var address = document.querySelector('#address');
 var capacity = adForm.querySelector('#capacity');
@@ -153,7 +160,7 @@ var getPhotosArray = function (arr, container, imageElement) {
 };
 
 // создает карточку объявления
-var createRelatedAd = function (cardAd) {
+var renderlatedAd = function (cardAd) {
   var relatedAdCard = document.querySelector('#card').content.cloneNode(true);
   var photosBlock = relatedAdCard.querySelector('.popup__photos');
   var photo = photosBlock.querySelector('.popup__photo');
@@ -184,7 +191,7 @@ var createRelatedAd = function (cardAd) {
 
   relatedAdCard.querySelector('.popup__avatar').src = cardAd.author.avatar;
 
-  return relatedAdCard;
+  map.insertBefore(relatedAdCard, mapFiltersContainer);
 };
 
 // создает фрагмент пинов
@@ -197,6 +204,8 @@ var createAdFragment = function (arr) {
 
   return fragment;
 };
+
+var ads = getRelatedAdArray(AD_COUNT);
 
 var activatePage = function () {
   var locationX = parseInt(pin.style.left, 10) + ((pinImg.width) / 2);
@@ -217,7 +226,7 @@ var activatePage = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
 
-  mapPins.appendChild(createAdFragment(getRelatedAdArray(AD_COUNT)));
+  mapPins.appendChild(createAdFragment(ads));
 };
 
 var checkValidRooms = function () {
@@ -243,6 +252,23 @@ var checkValidRoomsType = function () {
   price.setAttribute('placeholder', attributeValue);
 };
 
+var checkMaxPrice = function () {
+  if (price.value > PRICE_MAX) {
+    price.setCustomValidity(ERROR_TEXT_PRICE);
+  }
+};
+
+var synchronizeTimeIn = function () {
+  selectTimeOut.value = selectTimeIn.value;
+};
+
+var synchronizeTimeOut = function () {
+  selectTimeIn.value = selectTimeOut.value;
+};
+
+selectTimeIn.addEventListener('change', synchronizeTimeIn);
+selectTimeOut.addEventListener('change', synchronizeTimeOut);
+
 var disablePage = function () {
   var locationX = parseInt(pin.style.left, 10) + ((pinImg.width) / 2);
   var locationY = parseInt(pin.style.top, 10) + ((pinImg.height) / 2);
@@ -264,18 +290,12 @@ var disablePage = function () {
   checkValidRoomsType();
 };
 
-
-var y = [];
-for (var i = 0; i < AD_COUNT; i++) {
-  y[i] = createRelatedAd(getRelatedAdArray(AD_COUNT)[i]);
-}
-console.log(y[0]);
-
 disablePage();
 
 adForm.addEventListener('input', function () {
   checkValidRooms();
   checkValidRoomsType();
+  checkMaxPrice();
 });
 
 mapPinMain.addEventListener('mousedown', function (evt) {
@@ -290,35 +310,61 @@ mapPinMain.addEventListener('keydown', function (evt) {
   }
 });
 
+// закрывает открытую карточку
+var closeOpenedCard = function () {
+  var mapCard = map.querySelector('.map__card');
+  if (mapCard) {
+    map.removeChild(mapCard);
+  }
+};
+
 // отображает карточку, при нажатии, на соответствующий пин
 var pinClickHandler = function (evt) {
-  var index;
-  var x;
+  var isClickOnPin = evt.target.className === 'map__pin' && evt.target.className !== 'map__pin map__pin--main';
+  var isClickInsidePin = evt.target.closest('.map__pin') && !(evt.target.closest('.map__pin--main'));
+  var adId;
+  var targetAd;
+  closeOpenedCard();
 
-  if (evt.target.className === 'map__pin') {
+  // чтобы игнорирование клика, по главному пину, работало, функция отрисовки карточки перенесена внутрь каждого условия
+  if (isClickOnPin) {
+    adId = evt.target.dataset.id;
+    targetAd = ads.find(function (ad) {
+      return parseInt(ad.id, 10) === parseInt(adId, 10);
+    });
 
-    index = evt.target.dataset.id;
+    renderlatedAd(targetAd);
+  } else if (isClickInsidePin) {
+    adId = evt.target.closest('.map__pin').dataset.id;
+    targetAd = ads.find(function (ad) {
+      return parseInt(ad.id, 10) === parseInt(adId, 10);
+    });
 
-    map.insertBefore(y[index], mapFiltersContainer);
-
-  } else if (evt.target.offsetParent.className === 'map__pin') {
-
-    index = evt.target.offsetParent.dataset.id;
-
-    map.insertBefore(y[index], mapFiltersContainer);
-
+    renderlatedAd(targetAd);
   }
-
 };
 
 document.addEventListener('click', pinClickHandler);
 
-
-var closex = function (evt) {
+// закрывает попап по клику на иконку крестика
+var mapCardMousedownHandler = function (evt) {
+  // находит карточку во время вызова функции
   var mapCard = map.querySelector('.map__card');
+
   if (evt.target.className === 'popup__close') {
     map.removeChild(mapCard);
   }
 };
 
-document.addEventListener('click', closex);
+// закрывает попап по нажатию на ескейп
+var mapCardKeydownHandler = function (evt) {
+  // находит карточку во время вызова функции
+  var mapCard = map.querySelector('.map__card');
+
+  if (evt.key === ESCAPE_KEY) {
+    map.removeChild(mapCard);
+  }
+};
+
+document.addEventListener('click', mapCardMousedownHandler);
+document.addEventListener('keydown', mapCardKeydownHandler);
