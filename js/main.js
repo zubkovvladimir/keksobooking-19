@@ -29,7 +29,6 @@ var PRICE_MAX = 1000000;
 
 var ENTER_KEY = 'Enter';
 var ESCAPE_KEY = 'Escape';
-var MOUSE_BUTTON_LEFT_CODE = 0;
 
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
@@ -49,7 +48,6 @@ var adForm = document.querySelector('.ad-form');
 var formFieldset = adForm.querySelectorAll('fieldset');
 var selectTimeIn = adForm.querySelector('#timein');
 var selectTimeOut = adForm.querySelector('#timeout');
-var containerTimeinTimeout = adForm.querySelector('.ad-form__element--time');
 
 var address = document.querySelector('#address');
 var capacity = adForm.querySelector('#capacity');
