@@ -26,6 +26,25 @@
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
+  var OffsetTypeMap = {
+    palace: {
+      label: 'Дворец',
+      minPrice: 10000
+    },
+    flat: {
+      label: 'Квартира',
+      minPrice: 1000
+    },
+    house: {
+      label: 'Дом',
+      minPrice: 5000
+    },
+    bungalo: {
+      label: 'Бунгало',
+      minPrice: 0
+    }
+  };
+
   var getRelatedAdArray = function (arrLength) {
     var arrayRelatedAd = [];
 
@@ -62,6 +81,7 @@
   };
 
   window.data = {
-    getRelatedAdArray: getRelatedAdArray
+    getRelatedAdArray: getRelatedAdArray,
+    offsetTypeMap: OffsetTypeMap
   };
 })();

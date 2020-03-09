@@ -12,25 +12,7 @@
   var roomNumber = adForm.querySelector('#room_number');
   var price = adForm.querySelector('#price');
   var roomType = adForm.querySelector('#type');
-
-  var offsetTypeMap = {
-    palace: {
-      label: 'Дворец',
-      minPrice: 10000
-    },
-    flat: {
-      label: 'Квартира',
-      minPrice: 1000
-    },
-    house: {
-      label: 'Дом',
-      minPrice: 5000
-    },
-    bungalo: {
-      label: 'Бунгало',
-      minPrice: 0
-    }
-  };
+  var formFieldset = adForm.querySelectorAll('fieldset');
 
   var checkValidRooms = function () {
     var guests = capacity.value;
@@ -49,7 +31,7 @@
 
   var checkValidRoomsType = function () {
     var typeValue = roomType.value;
-    var attributeValue = offsetTypeMap[typeValue].minPrice;
+    var attributeValue = window.data.offsetTypeMap[typeValue].minPrice;
 
     price.setAttribute('min', attributeValue);
     price.setAttribute('placeholder', attributeValue);
@@ -63,6 +45,23 @@
     selectTimeIn.value = selectTimeOut.value;
   };
 
+  var activate = function () {
+    for (var i = 0; i < formFieldset.length; i++) {
+      formFieldset[i].disabled = false;
+    }
+    adForm.classList.remove('ad-form--disabled');
+  };
+
+  var deactivate = function () {
+    // проходит по филдсетам и проставляет disabled
+    window.utils.disableElements(formFieldset);
+
+    window.utils.getAddressMainPin();
+
+    // изменяет, дефолтный плейсхолдер, в разметке, на корректный
+    checkValidRoomsType();
+  };
+
   selectTimeIn.addEventListener('change', synchronizeTimeIn);
   selectTimeOut.addEventListener('change', synchronizeTimeOut);
 
@@ -73,6 +72,8 @@
   });
 
   window.form = {
-    checkValidRoomsType: checkValidRoomsType
+    checkValidRoomsType: checkValidRoomsType,
+    activate: activate,
+    deactivate: deactivate
   };
 })();

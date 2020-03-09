@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var ESCAPE_KEY = 'Escape';
+  var ENTER_KEY = 'Enter';
+  var mapPinMain = document.querySelector('.map__pin--main');
+  var mapPinMainStyle = getComputedStyle(document.querySelector('.map__pin--main'));
+  var pinAfter = getComputedStyle(document.querySelector('.map__pin--main'), ':after');
+  var address = document.querySelector('#address');
+
   var getRandomNumber = function (min, max, arbitrary) {
     if (!arbitrary) {
       arbitrary = 0;
@@ -16,8 +23,26 @@
     return arrayRandomLength;
   };
 
+  var disableElements = function (arrayElements) {
+    for (var j = 0; j < arrayElements.length; j++) {
+      arrayElements[j].disabled = true;
+    }
+  };
+
+  var getAddressMainPin = function (isTail) {
+    var fullHeight = isTail ? parseInt(mapPinMainStyle.height, 10) + parseInt(pinAfter.height, 10)
+      : Math.round(parseInt(mapPinMainStyle.height, 10) / 2);
+
+    address.value = parseInt(mapPinMain.style.left, 10) + Math.round(parseInt(mapPinMainStyle.width, 10) / 2) + ', '
+       + (parseInt(mapPinMain.style.top, 10) + parseInt(fullHeight, 10));
+  };
+
   window.utils = {
     getRandomNumber: getRandomNumber,
-    getRandomLengthArray: getRandomLengthArray
+    getRandomLengthArray: getRandomLengthArray,
+    enterKey: ENTER_KEY,
+    escapeKey: ESCAPE_KEY,
+    disableElements: disableElements,
+    getAddressMainPin: getAddressMainPin
   };
 })();

@@ -1,34 +1,13 @@
 'use strict';
 
 (function () {
-  var offsetTypeMap = {
-    palace: {
-      label: 'Дворец',
-      minPrice: 10000
-    },
-    flat: {
-      label: 'Квартира',
-      minPrice: 1000
-    },
-    house: {
-      label: 'Дом',
-      minPrice: 5000
-    },
-    bungalo: {
-      label: 'Бунгало',
-      minPrice: 0
-    }
-  };
-
-  var mapFiltersContainer = document.querySelector('.map__filters-container');
-  var map = document.querySelector('.map');
-
-  var getFeaturesArray = function (arr, tag, class1, class2, features) {
+  var getFeaturesArray = function (arr, tag, featureClass, features) {
     features.textContent = '';
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < arr.length; i++) {
       var featuresElement = document.createElement(tag);
-      featuresElement.classList.add(class1, class2 + arr[i]);
+      var className = featureClass + ' ' + featureClass + '--' + arr[i];
+      featuresElement.className = className;
       fragment.appendChild(featuresElement);
     }
     features.appendChild(fragment);
@@ -46,7 +25,7 @@
   };
 
   // создает карточку объявления
-  var renderRelatedAd = function (cardAd) {
+  var renderRelatedAd = function (cardAd, cardContainer, insertBeforeEl) {
     var relatedAdCard = document.querySelector('#card').content.cloneNode(true);
     var photosBlock = relatedAdCard.querySelector('.popup__photos');
     var photo = photosBlock.querySelector('.popup__photo');
@@ -55,14 +34,14 @@
     relatedAdCard.querySelector('.popup__title').textContent = cardAd.offer.title;
     relatedAdCard.querySelector('.popup__text--address').textContent = cardAd.offer.address;
     relatedAdCard.querySelector('.popup__text--price').textContent = cardAd.offer.price;
-    relatedAdCard.querySelector('.popup__type').textContent = offsetTypeMap[cardAd.offer.type].label;
+    relatedAdCard.querySelector('.popup__type').textContent = window.data.offsetTypeMap[cardAd.offer.type].label;
     relatedAdCard.querySelector('.popup__text--capacity').textContent =
       cardAd.offer.rooms + ' комнаты для ' + cardAd.offer.guests + ' гостей';
     relatedAdCard.querySelector('.popup__text--time').textContent =
       'Заезд после ' + cardAd.offer.checkin + ', выезд до ' + cardAd.offer.checkout;
 
     if (cardAd.offer.features.length) {
-      getFeaturesArray(cardAd.offer.features, 'li', 'popup__feature', 'popup__feature--', featuresBlock);
+      getFeaturesArray(cardAd.offer.features, 'li', 'popup__feature', featuresBlock);
     } else {
       relatedAdCard.querySelector('.popup').removeChild(featuresBlock);
     }
@@ -77,7 +56,7 @@
 
     relatedAdCard.querySelector('.popup__avatar').src = cardAd.author.avatar;
 
-    map.insertBefore(relatedAdCard, mapFiltersContainer);
+    cardContainer.insertBefore(relatedAdCard, insertBeforeEl);
   };
 
   window.card = {
