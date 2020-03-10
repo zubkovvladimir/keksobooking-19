@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var RANGE_TOP = 130;
+  var RANGE_BOTTOM = 630;
+
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapPinMainStyle = getComputedStyle(document.querySelector('.map__pin--main'));
   var mapWidth = getComputedStyle(document.querySelector('.map__pins'));
@@ -8,12 +11,7 @@
   var rangeRight = Math.round((parseInt(mapWidth.width, 10) - (parseInt(mapPinMainStyle.width, 10) / 2)));
   var rangeLeft = Math.round(0 - (parseInt(mapPinMainStyle.width, 10) / 2));
 
-  var RANGE_TOP = 130;
-  var RANGE_BOTTOM = 630;
-
-  mapPinMain.addEventListener('mousedown', function (evt) {
-    evt.preventDefault();
-
+  var mouseDragHandler = function (evt) {
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -63,5 +61,10 @@
 
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
+  };
+
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+    mouseDragHandler(evt);
   });
 })();
