@@ -14,6 +14,25 @@
   var roomType = adForm.querySelector('#type');
   var formFieldset = adForm.querySelectorAll('fieldset');
 
+  var OffsetTypeMap = {
+    palace: {
+      label: 'Дворец',
+      minPrice: 10000
+    },
+    flat: {
+      label: 'Квартира',
+      minPrice: 1000
+    },
+    house: {
+      label: 'Дом',
+      minPrice: 5000
+    },
+    bungalo: {
+      label: 'Бунгало',
+      minPrice: 0
+    }
+  };
+
   var checkValidRooms = function () {
     var guests = capacity.value;
     var roomNumberValue = roomNumber.value;
@@ -31,7 +50,7 @@
 
   var checkValidRoomsType = function () {
     var typeValue = roomType.value;
-    var attributeValue = window.data.offsetTypeMap[typeValue].minPrice;
+    var attributeValue = OffsetTypeMap[typeValue].minPrice;
 
     price.setAttribute('min', attributeValue);
     price.setAttribute('placeholder', attributeValue);
@@ -74,6 +93,7 @@
   window.form = {
     checkValidRoomsType: checkValidRoomsType,
     activate: activate,
-    deactivate: deactivate
+    deactivate: deactivate,
+    offsetTypeMap: OffsetTypeMap
   };
 })();

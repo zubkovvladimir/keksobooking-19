@@ -1,27 +1,27 @@
 'use strict';
 
 (function () {
-  var AD_COUNT = 8;
-
   var map = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPins = document.querySelector('.map__pins');
   var mapFilters = mapFiltersContainer.querySelector('.map__filters');
   var mapFiltersSelect = mapFilters.querySelectorAll('.map__filter');
   var mapFiltersFieldset = mapFilters.querySelector('.map__features');
+  var adArray;
 
-  // создает фрагмент пинов
-  var createAdFragment = function (arr) {
+  // отрисовывает фрагмент пинов
+  var renderPinFragment = function (arr) {
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < arr.length; i++) {
+      arr[i].id = i;
       fragment.appendChild(window.pin.create(arr[i]));
     }
 
-    return fragment;
-  };
+    adArray = arr;
 
-  var ads = window.data.getRelatedAdArray(AD_COUNT);
+    mapPins.appendChild(fragment);
+  };
 
   // закрывает открытую карточку
   var closeOpenedCard = function () {
@@ -33,7 +33,7 @@
 
   var renderFoundAd = function (adId) {
     var targetAd;
-    targetAd = window.map.massiveAds.find(function (ad) {
+    targetAd = adArray.find(function (ad) {
       return parseInt(ad.id, 10) === parseInt(adId, 10);
     });
     window.card.renderRelatedAd(targetAd, map, mapFiltersContainer);
@@ -87,7 +87,7 @@
 
     map.classList.remove('map--faded');
 
-    mapPins.appendChild(window.map.createAdFragment(window.map.massiveAds));
+    window.backend.load(renderPinFragment);
   };
 
   var deactivate = function () {
@@ -98,12 +98,11 @@
 
   };
 
+
   document.addEventListener('click', mapCardMousedownHandler);
   document.addEventListener('keydown', mapCardKeydownHandler);
 
   window.map = {
-    createAdFragment: createAdFragment,
-    massiveAds: ads,
     activate: activate,
     deactivate: deactivate
   };

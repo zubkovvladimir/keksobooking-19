@@ -34,7 +34,7 @@
     relatedAdCard.querySelector('.popup__title').textContent = cardAd.offer.title;
     relatedAdCard.querySelector('.popup__text--address').textContent = cardAd.offer.address;
     relatedAdCard.querySelector('.popup__text--price').textContent = cardAd.offer.price;
-    relatedAdCard.querySelector('.popup__type').textContent = window.data.offsetTypeMap[cardAd.offer.type].label;
+    relatedAdCard.querySelector('.popup__type').textContent = window.form.offsetTypeMap[cardAd.offer.type].label;
     relatedAdCard.querySelector('.popup__text--capacity').textContent =
       cardAd.offer.rooms + ' комнаты для ' + cardAd.offer.guests + ' гостей';
     relatedAdCard.querySelector('.popup__text--time').textContent =
