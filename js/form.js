@@ -125,15 +125,18 @@
 
   var success = function () {
     successMessage();
-    window.init.disablePage();
   };
 
   var formSubmitHandler = function (evt) {
-    window.backend.save(new FormData(adForm), success, errorMessage);
+    window.backend.save(new FormData(adForm), function (response) {
+      if (response) {
+        successMessage();
+        window.init.disablePage();
+      }
+    });
     evt.preventDefault();
   };
 
-  messageErrorButton.addEventListener('click', resetForm);
   adFormReset.addEventListener('click', resetForm);
   adForm.addEventListener('submit', formSubmitHandler);
   selectTimeIn.addEventListener('change', synchronizeTimeIn);

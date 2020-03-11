@@ -39,6 +39,9 @@
       return parseInt(ad.id, 10) === parseInt(adId, 10);
     });
     window.card.renderRelatedAd(targetAd, map, mapFiltersContainer);
+
+    document.addEventListener('click', mapCardMousedownHandler);
+    document.addEventListener('keydown', mapCardKeydownHandler);
   };
 
   // отображает карточку, при нажатии, на соответствующий пин
@@ -62,21 +65,25 @@
 
   // закрывает попап по клику на иконку крестика
   var mapCardMousedownHandler = function (evt) {
-    // находит карточку во время вызова функции
-    var mapCard = map.querySelector('.map__card');
-
     if (evt.target.className === 'popup__close') {
+      // находит карточку во время вызова функции
+      var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
+
+      document.removeEventListener('click', mapCardMousedownHandler);
+      document.removeEventListener('keydown', mapCardKeydownHandler);
     }
   };
 
   // закрывает попап по нажатию на ескейп
   var mapCardKeydownHandler = function (evt) {
-    // находит карточку во время вызова функции
-    var mapCard = map.querySelector('.map__card');
-
     if (evt.key === window.utils.Keys.ESCAPE) {
+      // находит карточку во время вызова функции
+      var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
+
+      document.removeEventListener('click', mapCardMousedownHandler);
+      document.removeEventListener('keydown', mapCardKeydownHandler);
     }
   };
 
@@ -106,14 +113,7 @@
     });
 
     closeOpenedCard();
-
-    document.removeEventListener('click', mapCardMousedownHandler);
-    document.removeEventListener('keydown', mapCardKeydownHandler);
   };
-
-
-  document.addEventListener('click', mapCardMousedownHandler);
-  document.addEventListener('keydown', mapCardKeydownHandler);
 
   window.map = {
     activate: activate,
