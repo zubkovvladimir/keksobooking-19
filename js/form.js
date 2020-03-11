@@ -5,6 +5,7 @@
 
   var ERROR_TEXT_ROOMS = 'Выбранное количество комнат не соответствует выбранному количеству гостей';
 
+  var main = document.querySelector('main');
   var adForm = document.querySelector('.ad-form');
   var selectTimeIn = adForm.querySelector('#timein');
   var selectTimeOut = adForm.querySelector('#timeout');
@@ -13,6 +14,11 @@
   var price = adForm.querySelector('#price');
   var roomType = adForm.querySelector('#type');
   var formFieldset = adForm.querySelectorAll('fieldset');
+  var messageSuccces = document.querySelector('#success').content.querySelector('.success');
+  var messageError = document.querySelector('#error').content.querySelector('.error');
+  var messageErrorText = messageError.querySelector('.error__message');
+  var messageErrorButton = adForm.querySelector('.error__button');
+  var adFormReset = adForm.querySelector('.ad-form__reset');
 
   var OffsetTypeMap = {
     palace: {
@@ -64,6 +70,13 @@
     selectTimeIn.value = selectTimeOut.value;
   };
 
+  var resetForm = function () {
+    adForm.reset();
+
+    // изменяет, дефолтный плейсхолдер, в разметке, на корректный
+    checkValidRoomsType();
+  };
+
   var activate = function () {
     for (var i = 0; i < formFieldset.length; i++) {
       formFieldset[i].disabled = false;
@@ -77,10 +90,52 @@
 
     window.utils.getAddressMainPin();
 
-    // изменяет, дефолтный плейсхолдер, в разметке, на корректный
-    checkValidRoomsType();
+    adForm.classList.add('ad-form--disabled');
+
+    resetForm();
   };
 
+  var removeSuccessMessage = function (evt) {
+    if (evt.key === window.utils.Keys.ESCAPE || evt.button === 0) {
+      document.querySelector('.success').remove();
+
+      document.removeEventListener('keydown', removeSuccessMessage);
+      document.removeEventListener('click', removeSuccessMessage);
+    }
+  };
+
+  var errorMessage = function (errorText) {
+    messageError.style = 'z-index: 100; margin: 0 auto;';
+
+    messageErrorText.textContent = errorText;
+    main.insertAdjacentElement('afterbegin', messageError);
+
+    document.addEventListener('click', removeSuccessMessage);
+    document.addEventListener('keydown', removeSuccessMessage);
+  };
+
+  var successMessage = function () {
+    messageSuccces.style = 'z-index: 100; margin: 0 auto;';
+
+    document.body.insertAdjacentElement('afterbegin', messageSuccces);
+
+    document.addEventListener('click', removeSuccessMessage);
+    document.addEventListener('keydown', removeSuccessMessage);
+  };
+
+  var success = function () {
+    successMessage();
+    window.init.disablePage();
+  };
+
+  var formSubmitHandler = function (evt) {
+    window.backend.save(new FormData(adForm), success, errorMessage);
+    evt.preventDefault();
+  };
+
+  messageErrorButton.addEventListener('click', resetForm);
+  adFormReset.addEventListener('click', resetForm);
+  adForm.addEventListener('submit', formSubmitHandler);
   selectTimeIn.addEventListener('change', synchronizeTimeIn);
   selectTimeOut.addEventListener('change', synchronizeTimeOut);
 
@@ -94,6 +149,7 @@
     checkValidRoomsType: checkValidRoomsType,
     activate: activate,
     deactivate: deactivate,
-    offsetTypeMap: OffsetTypeMap
+    offsetTypeMap: OffsetTypeMap,
+    errorMessage: errorMessage
   };
 })();

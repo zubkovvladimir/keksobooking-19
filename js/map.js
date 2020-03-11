@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MAX_AMOUNT = 5;
+
   var map = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPins = document.querySelector('.map__pins');
@@ -13,7 +15,7 @@
   var renderPinFragment = function (arr) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < arr.length; i++) {
+    for (var i = 0; i < MAX_AMOUNT; i++) {
       arr[i].id = i;
       fragment.appendChild(window.pin.create(arr[i]));
     }
@@ -73,7 +75,7 @@
     // находит карточку во время вызова функции
     var mapCard = map.querySelector('.map__card');
 
-    if (evt.key === window.utils.escapeKey) {
+    if (evt.key === window.utils.Keys.ESCAPE) {
       map.removeChild(mapCard);
     }
   };
@@ -87,7 +89,7 @@
 
     map.classList.remove('map--faded');
 
-    window.backend.load(renderPinFragment);
+    window.backend.load(renderPinFragment, window.form.errorHandler);
   };
 
   var deactivate = function () {
@@ -96,6 +98,17 @@
 
     mapFiltersFieldset.disabled = true;
 
+    map.classList.add('map--faded');
+
+    var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (item) {
+      item.remove();
+    });
+
+    closeOpenedCard();
+
+    document.removeEventListener('click', mapCardMousedownHandler);
+    document.removeEventListener('keydown', mapCardKeydownHandler);
   };
 
 
