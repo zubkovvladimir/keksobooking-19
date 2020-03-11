@@ -40,25 +40,11 @@
        + (parseInt(mapPinMain.style.top, 10) + parseInt(fullHeight, 10));
   };
 
-  var actionIfEnterEvent = function (evt, action) {
-    if (evt.key === Keys.ENTER) {
-      action();
-    }
-  };
-
-  var actionIfEscapeEvent = function (evt, action) {
-    if (evt.key === Keys.ESCAPE) {
-      action();
-    }
-  };
-
   window.utils = {
     getRandomNumber: getRandomNumber,
     getRandomLengthArray: getRandomLengthArray,
     disableElements: disableElements,
     getAddressMainPin: getAddressMainPin,
-    actionIfEnterEvent: actionIfEnterEvent,
-    actionIfEscapeEvent: actionIfEscapeEvent,
     Keys: Keys
   };
 })();

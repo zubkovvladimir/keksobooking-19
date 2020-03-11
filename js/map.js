@@ -96,7 +96,7 @@
 
     map.classList.remove('map--faded');
 
-    window.backend.load(renderPinFragment, window.form.errorHandler);
+    window.backend.load(renderPinFragment, window.form.errorMessage);
   };
 
   var deactivate = function () {

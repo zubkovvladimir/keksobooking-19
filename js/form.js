@@ -5,7 +5,6 @@
 
   var ERROR_TEXT_ROOMS = 'Выбранное количество комнат не соответствует выбранному количеству гостей';
 
-  var main = document.querySelector('main');
   var adForm = document.querySelector('.ad-form');
   var selectTimeIn = adForm.querySelector('#timein');
   var selectTimeOut = adForm.querySelector('#timeout');
@@ -14,10 +13,6 @@
   var price = adForm.querySelector('#price');
   var roomType = adForm.querySelector('#type');
   var formFieldset = adForm.querySelectorAll('fieldset');
-  var messageSuccces = document.querySelector('#success').content.querySelector('.success');
-  var messageError = document.querySelector('#error').content.querySelector('.error');
-  var messageErrorText = messageError.querySelector('.error__message');
-  var messageErrorButton = adForm.querySelector('.error__button');
   var adFormReset = adForm.querySelector('.ad-form__reset');
 
   var OffsetTypeMap = {
@@ -72,7 +67,6 @@
 
   var resetForm = function () {
     adForm.reset();
-
     // изменяет, дефолтный плейсхолдер, в разметке, на корректный
     checkValidRoomsType();
   };
@@ -88,56 +82,62 @@
     // проходит по филдсетам и проставляет disabled
     window.utils.disableElements(formFieldset);
 
-    window.utils.getAddressMainPin();
-
     adForm.classList.add('ad-form--disabled');
 
     resetForm();
+
+    window.utils.getAddressMainPin();
   };
 
   var removeSuccessMessage = function (evt) {
-    if (evt.key === window.utils.Keys.ESCAPE || evt.button === 0) {
-      document.querySelector('.success').remove();
+    if (evt.key === window.utils.Keys.ESCAPE || evt.button === 0 || evt.target.className === 'error__button') {
+      document.querySelector('#message').remove();
 
       document.removeEventListener('keydown', removeSuccessMessage);
-      document.removeEventListener('click', removeSuccessMessage);
+      document.removeEventListener('mousedown', removeSuccessMessage);
+
+      window.init.disablePage();
     }
   };
 
   var errorMessage = function (errorText) {
-    messageError.style = 'z-index: 100; margin: 0 auto;';
-
+    var template = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+    var messageErrorText = template.querySelector('.error__message');
+    template.id = 'message';
     messageErrorText.textContent = errorText;
-    main.insertAdjacentElement('afterbegin', messageError);
 
-    document.addEventListener('click', removeSuccessMessage);
+    document.body.querySelector('main').appendChild(template);
+
+    // чтобы за один клик, не появлялось и одновременно скрывалось, сообщение об ошибке, используется событие mousedown, а не click
+    document.addEventListener('mousedown', removeSuccessMessage);
     document.addEventListener('keydown', removeSuccessMessage);
   };
 
   var successMessage = function () {
-    messageSuccces.style = 'z-index: 100; margin: 0 auto;';
+    var template = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+    template.id = 'message';
 
-    document.body.insertAdjacentElement('afterbegin', messageSuccces);
+    document.body.querySelector('main').appendChild(template);
 
-    document.addEventListener('click', removeSuccessMessage);
+    // чтобы за один клик, одновременно, не появлялось и скрывалось, сообщение об ошибке, используется событие mousedown, а не click
+    document.addEventListener('mousedown', removeSuccessMessage);
     document.addEventListener('keydown', removeSuccessMessage);
   };
 
   var success = function () {
     successMessage();
+    window.init.disablePage();
   };
 
   var formSubmitHandler = function (evt) {
-    window.backend.save(new FormData(adForm), function (response) {
-      if (response) {
-        successMessage();
-        window.init.disablePage();
-      }
-    });
+    window.backend.save(new FormData(adForm), success, errorMessage);
     evt.preventDefault();
   };
 
-  adFormReset.addEventListener('click', resetForm);
+  adFormReset.addEventListener('click', function () {
+    resetForm();
+    window.init.disablePage();
+  });
   adForm.addEventListener('submit', formSubmitHandler);
   selectTimeIn.addEventListener('change', synchronizeTimeIn);
   selectTimeOut.addEventListener('change', synchronizeTimeOut);

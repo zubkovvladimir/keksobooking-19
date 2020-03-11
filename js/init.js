@@ -9,6 +9,7 @@
   };
 
   var disablePage = function () {
+    mapPinMain.style = 'left: 570px; top: 375px;';
     window.form.deactivate();
     window.map.deactivate();
 
