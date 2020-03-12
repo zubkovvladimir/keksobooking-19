@@ -13,6 +13,7 @@
   var price = adForm.querySelector('#price');
   var roomType = adForm.querySelector('#type');
   var formFieldset = adForm.querySelectorAll('fieldset');
+  var adFormReset = adForm.querySelector('.ad-form__reset');
 
   var OffsetTypeMap = {
     palace: {
@@ -64,6 +65,12 @@
     selectTimeIn.value = selectTimeOut.value;
   };
 
+  var resetForm = function () {
+    adForm.reset();
+    // изменяет, дефолтный плейсхолдер, в разметке, на корректный
+    checkValidRoomsType();
+  };
+
   var activate = function () {
     for (var i = 0; i < formFieldset.length; i++) {
       formFieldset[i].disabled = false;
@@ -75,12 +82,63 @@
     // проходит по филдсетам и проставляет disabled
     window.utils.disableElements(formFieldset);
 
-    window.utils.getAddressMainPin();
+    adForm.classList.add('ad-form--disabled');
 
-    // изменяет, дефолтный плейсхолдер, в разметке, на корректный
-    checkValidRoomsType();
+    resetForm();
+
+    window.utils.getAddressMainPin();
   };
 
+  var removeSuccessMessage = function (evt) {
+    if (evt.key === window.utils.Keys.ESCAPE || evt.button === 0 || evt.target.className === 'error__button') {
+      document.querySelector('#message').remove();
+
+      document.removeEventListener('keydown', removeSuccessMessage);
+      document.removeEventListener('mousedown', removeSuccessMessage);
+
+      window.init.disablePage();
+    }
+  };
+
+  var errorMessage = function (errorText) {
+    var template = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+    var messageErrorText = template.querySelector('.error__message');
+    template.id = 'message';
+    messageErrorText.textContent = errorText;
+
+    document.body.querySelector('main').appendChild(template);
+
+    // чтобы за один клик, не появлялось и одновременно скрывалось, сообщение об ошибке, используется событие mousedown, а не click
+    document.addEventListener('mousedown', removeSuccessMessage);
+    document.addEventListener('keydown', removeSuccessMessage);
+  };
+
+  var successMessage = function () {
+    var template = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+    template.id = 'message';
+
+    document.body.querySelector('main').appendChild(template);
+
+    // чтобы за один клик, одновременно, не появлялось и скрывалось, сообщение об ошибке, используется событие mousedown, а не click
+    document.addEventListener('mousedown', removeSuccessMessage);
+    document.addEventListener('keydown', removeSuccessMessage);
+  };
+
+  var success = function () {
+    successMessage();
+    window.init.disablePage();
+  };
+
+  var formSubmitHandler = function (evt) {
+    window.backend.save(new FormData(adForm), success, errorMessage);
+    evt.preventDefault();
+  };
+
+  adFormReset.addEventListener('click', function () {
+    resetForm();
+    window.init.disablePage();
+  });
+  adForm.addEventListener('submit', formSubmitHandler);
   selectTimeIn.addEventListener('change', synchronizeTimeIn);
   selectTimeOut.addEventListener('change', synchronizeTimeOut);
 
@@ -94,6 +152,7 @@
     checkValidRoomsType: checkValidRoomsType,
     activate: activate,
     deactivate: deactivate,
-    offsetTypeMap: OffsetTypeMap
+    offsetTypeMap: OffsetTypeMap,
+    errorMessage: errorMessage
   };
 })();

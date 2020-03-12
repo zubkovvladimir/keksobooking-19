@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MAX_AMOUNT = 5;
+
   var map = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapPins = document.querySelector('.map__pins');
@@ -13,7 +15,7 @@
   var renderPinFragment = function (arr) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < arr.length; i++) {
+    for (var i = 0; i < MAX_AMOUNT; i++) {
       arr[i].id = i;
       fragment.appendChild(window.pin.create(arr[i]));
     }
@@ -37,6 +39,9 @@
       return parseInt(ad.id, 10) === parseInt(adId, 10);
     });
     window.card.renderRelatedAd(targetAd, map, mapFiltersContainer);
+
+    document.addEventListener('click', mapCardMousedownHandler);
+    document.addEventListener('keydown', mapCardKeydownHandler);
   };
 
   // отображает карточку, при нажатии, на соответствующий пин
@@ -60,21 +65,25 @@
 
   // закрывает попап по клику на иконку крестика
   var mapCardMousedownHandler = function (evt) {
-    // находит карточку во время вызова функции
-    var mapCard = map.querySelector('.map__card');
-
     if (evt.target.className === 'popup__close') {
+      // находит карточку во время вызова функции
+      var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
+
+      document.removeEventListener('click', mapCardMousedownHandler);
+      document.removeEventListener('keydown', mapCardKeydownHandler);
     }
   };
 
   // закрывает попап по нажатию на ескейп
   var mapCardKeydownHandler = function (evt) {
-    // находит карточку во время вызова функции
-    var mapCard = map.querySelector('.map__card');
-
-    if (evt.key === window.utils.escapeKey) {
+    if (evt.key === window.utils.Keys.ESCAPE) {
+      // находит карточку во время вызова функции
+      var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
+
+      document.removeEventListener('click', mapCardMousedownHandler);
+      document.removeEventListener('keydown', mapCardKeydownHandler);
     }
   };
 
@@ -87,7 +96,7 @@
 
     map.classList.remove('map--faded');
 
-    window.backend.load(renderPinFragment);
+    window.backend.load(renderPinFragment, window.form.errorMessage);
   };
 
   var deactivate = function () {
@@ -96,11 +105,15 @@
 
     mapFiltersFieldset.disabled = true;
 
+    map.classList.add('map--faded');
+
+    var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (item) {
+      item.remove();
+    });
+
+    closeOpenedCard();
   };
-
-
-  document.addEventListener('click', mapCardMousedownHandler);
-  document.addEventListener('keydown', mapCardKeydownHandler);
 
   window.map = {
     activate: activate,

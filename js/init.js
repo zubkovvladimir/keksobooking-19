@@ -9,14 +9,18 @@
   };
 
   var disablePage = function () {
+    mapPinMain.style = 'left: 570px; top: 375px;';
     window.form.deactivate();
     window.map.deactivate();
+
+    mapPinMain.addEventListener('mousedown', isMainPinHandler);
+    mapPinMain.addEventListener('keydown', isMainPinHandler);
   };
 
   disablePage();
 
   var isMainPinHandler = function (evt) {
-    if (evt.button === 0 || evt.key === window.utils.enterKey) {
+    if (evt.button === 0 || evt.key === window.utils.Keys.ENTER) {
       activatePage();
     }
 
@@ -25,7 +29,6 @@
   };
 
   mapPinMain.addEventListener('mousedown', isMainPinHandler);
-
   mapPinMain.addEventListener('keydown', isMainPinHandler);
 
   window.init = {

@@ -1,12 +1,15 @@
 'use strict';
 
 (function () {
-  var ESCAPE_KEY = 'Escape';
-  var ENTER_KEY = 'Enter';
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapPinMainStyle = getComputedStyle(document.querySelector('.map__pin--main'));
   var pinAfter = getComputedStyle(document.querySelector('.map__pin--main'), ':after');
   var address = document.querySelector('#address');
+
+  var Keys = {
+    ENTER: 'Enter',
+    ESCAPE: 'Escape'
+  };
 
   var getRandomNumber = function (min, max, arbitrary) {
     if (!arbitrary) {
@@ -40,9 +43,8 @@
   window.utils = {
     getRandomNumber: getRandomNumber,
     getRandomLengthArray: getRandomLengthArray,
-    enterKey: ENTER_KEY,
-    escapeKey: ESCAPE_KEY,
     disableElements: disableElements,
-    getAddressMainPin: getAddressMainPin
+    getAddressMainPin: getAddressMainPin,
+    Keys: Keys
   };
 })();
