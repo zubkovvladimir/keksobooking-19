@@ -2,6 +2,7 @@
 
 (function () {
   var mapPinMain = document.querySelector('.map__pin--main');
+  var mapPinMainPosition = 'left: ' + mapPinMain.style.left + '; top: ' + mapPinMain.style.top + ';';
 
   var activatePage = function () {
     window.form.activate();
@@ -9,7 +10,7 @@
   };
 
   var disablePage = function () {
-    mapPinMain.style = 'left: 570px; top: 375px;';
+    mapPinMain.style = mapPinMainPosition;
     window.form.deactivate();
     window.map.deactivate();
 
