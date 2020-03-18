@@ -10,17 +10,20 @@
   var mapFiltersSelect = mapFilters.querySelectorAll('.map__filter');
   var mapFiltersFieldset = mapFilters.querySelector('.map__features');
   var adArray;
+  var defaultAdverts = [];
 
   // отрисовывает фрагмент пинов
   var renderPinFragment = function (arr) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < MAX_AMOUNT; i++) {
-      arr[i].id = i;
-      fragment.appendChild(window.pin.create(arr[i]));
-    }
+    adArray = arr.slice(0, MAX_AMOUNT);
 
-    adArray = arr;
+    for (var i = 0; i < adArray.length; i++) {
+      if (arr[i].offer) {
+        arr[i].id = i;
+        fragment.appendChild(window.pin.create(arr[i]));
+      }
+    }
 
     mapPins.appendChild(fragment);
   };
@@ -87,16 +90,44 @@
     }
   };
 
-  var activate = function () {
+  var successLoad = function (xhr) {
+    defaultAdverts = xhr;
+    renderPinFragment(xhr);
+
     for (var j = 0; j < mapFiltersSelect.length; j++) {
       mapFiltersSelect[j].disabled = false;
     }
 
     mapFiltersFieldset.disabled = false;
 
+    return defaultAdverts;
+  };
+
+  var removePins = function () {
+    var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (item) {
+      item.remove();
+    });
+  };
+
+  var filterPins = function () {
+    removePins();
+
+    closeOpenedCard();
+
+    var arrFiltered = window.filters.getFiltered(defaultAdverts);
+    renderPinFragment(arrFiltered);
+  };
+
+  var activate = function () {
     map.classList.remove('map--faded');
 
-    window.backend.load(renderPinFragment, window.form.errorMessage);
+    window.backend.load(successLoad, window.form.errorMessage);
+
+    mapFilters.addEventListener('change', function () {
+      removePins();
+      filterPins();
+    });
   };
 
   var deactivate = function () {
@@ -107,17 +138,16 @@
 
     map.classList.add('map--faded');
 
-    var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pins.forEach(function (item) {
-      item.remove();
-    });
+    removePins();
 
     closeOpenedCard();
+
+    mapFilters.removeEventListener('change', filterPins);
   };
 
   window.map = {
     activate: activate,
-    deactivate: deactivate
+    deactivate: deactivate,
   };
 
 })();

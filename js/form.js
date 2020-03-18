@@ -14,6 +14,9 @@
   var roomType = adForm.querySelector('#type');
   var formFieldset = adForm.querySelectorAll('fieldset');
   var adFormReset = adForm.querySelector('.ad-form__reset');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var succesTemplate = document.querySelector('#success').content.querySelector('.success');
+  var main = document.body.querySelector('main');
 
   var OffsetTypeMap = {
     palace: {
@@ -89,39 +92,43 @@
     window.utils.getAddressMainPin();
   };
 
-  var removeSuccessMessage = function (evt) {
-    if (evt.key === window.utils.Keys.ESCAPE || evt.button === 0 || evt.target.className === 'error__button') {
-      document.querySelector('#message').remove();
-
-      document.removeEventListener('keydown', removeSuccessMessage);
-      document.removeEventListener('mousedown', removeSuccessMessage);
-
-      window.init.disablePage();
+  var removeMessage = function () {
+    document.removeEventListener('keydown', removeMessage);
+    if (window.form.messageErrorButton) {
+      window.form.messageErrorButton.removeEventListener('click', removeMessage);
     }
+    window.form.message.removeEventListener('click', removeMessage);
+    document.querySelector('#message').remove();
+
+    window.init.disablePage();
   };
 
   var errorMessage = function (errorText) {
-    var template = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+    var template = errorTemplate.cloneNode(true);
     var messageErrorText = template.querySelector('.error__message');
     template.id = 'message';
+
+    main.appendChild(template);
+
+    window.form.message = main.querySelector('.error');
+    window.form.messageErrorButton = window.form.message.querySelector('.error__button');
     messageErrorText.textContent = errorText;
 
-    document.body.querySelector('main').appendChild(template);
-
-    // чтобы за один клик, не появлялось и одновременно скрывалось, сообщение об ошибке, используется событие mousedown, а не click
-    document.addEventListener('mousedown', removeSuccessMessage);
-    document.addEventListener('keydown', removeSuccessMessage);
+    window.form.messageErrorButton.addEventListener('click', removeMessage);
+    document.addEventListener('keydown', removeMessage);
+    window.form.message.addEventListener('click', removeMessage);
   };
 
   var successMessage = function () {
-    var template = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+    var template = succesTemplate.cloneNode(true);
     template.id = 'message';
 
-    document.body.querySelector('main').appendChild(template);
+    main.appendChild(template);
 
-    // чтобы за один клик, одновременно, не появлялось и скрывалось, сообщение об ошибке, используется событие mousedown, а не click
-    document.addEventListener('mousedown', removeSuccessMessage);
-    document.addEventListener('keydown', removeSuccessMessage);
+    window.form.message = main.querySelector('.success');
+
+    window.form.message.addEventListener('click', removeMessage);
+    document.addEventListener('keydown', removeMessage);
   };
 
   var success = function () {
