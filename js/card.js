@@ -40,12 +40,12 @@
     var description = relatedAdCard.querySelector('.popup__description');
     var avatar = relatedAdCard.querySelector('.popup__avatar');
 
-    relatedAdCard.querySelector('.popup__title').textContent = cardAd.offer.title || title.remove();
-    relatedAdCard.querySelector('.popup__text--address').textContent = cardAd.offer.address || address.remove();
-    relatedAdCard.querySelector('.popup__text--price').textContent = cardAd.offer.price ? cardAd.offer.price + ' ₽/ночь' : price.remove();
-    relatedAdCard.querySelector('.popup__type').textContent = window.form.offsetTypeMap[cardAd.offer.type].label || type.remove();
-    relatedAdCard.querySelector('.popup__text--capacity').textContent = cardAd.offer.rooms ? cardAd.offer.rooms + ' комнаты для ' + cardAd.offer.guests + ' гостей' : capacity.remove();
-    relatedAdCard.querySelector('.popup__text--time').textContent = cardAd.offer.checkin && cardAd.offer.checkout ? 'Заезд после ' + cardAd.offer.checkin + ', выезд до ' + cardAd.offer.checkout : time.remove();
+    title.textContent = cardAd.offer.title || title.remove();
+    address.textContent = cardAd.offer.address || address.remove();
+    price.textContent = cardAd.offer.price ? cardAd.offer.price + ' ₽/ночь' : price.remove();
+    type.textContent = window.form.offsetTypeMap[cardAd.offer.type].label || type.remove();
+    capacity.textContent = cardAd.offer.rooms ? cardAd.offer.rooms + ' комнаты для ' + cardAd.offer.guests + ' гостей' : capacity.remove();
+    time.textContent = cardAd.offer.checkin && cardAd.offer.checkout ? 'Заезд после ' + cardAd.offer.checkin + ', выезд до ' + cardAd.offer.checkout : time.remove();
 
     if (cardAd.offer.features.length) {
       getFeaturesArray(cardAd.offer.features, 'li', 'popup__feature', featuresBlock);
@@ -53,7 +53,7 @@
       relatedAdCard.querySelector('.popup').removeChild(featuresBlock);
     }
 
-    relatedAdCard.querySelector('.popup__description').textContent = cardAd.offer.description || description.remove();
+    description.textContent = cardAd.offer.description || description.remove();
 
     if (cardAd.offer.photos.length) {
       getPhotosArray(cardAd.offer.photos, photosBlock, photo);
@@ -61,7 +61,7 @@
       relatedAdCard.querySelector('.popup').removeChild(photosBlock);
     }
 
-    relatedAdCard.querySelector('.popup__avatar').src = cardAd.author.avatar || avatar.remove();
+    avatar.src = cardAd.author.avatar || avatar.remove();
 
     cardContainer.insertBefore(relatedAdCard, insertBeforeEl);
   };
