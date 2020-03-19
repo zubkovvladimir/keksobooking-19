@@ -2,6 +2,7 @@
 
 (function () {
   var MAX_AMOUNT = 5;
+  var FILTER_DEFAULT_VALUE = 'any';
 
   var map = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -115,7 +116,7 @@
 
     closeOpenedCard();
 
-    var arrFiltered = window.filters.getFiltered(defaultAdverts);
+    var arrFiltered = window.filters.get(defaultAdverts);
     renderPinFragment(arrFiltered);
   };
 
@@ -140,6 +141,10 @@
 
     removePins();
 
+    mapFiltersSelect.forEach(function (filter) {
+      filter.value = FILTER_DEFAULT_VALUE;
+    });
+
     closeOpenedCard();
 
     mapFilters.removeEventListener('change', filterPins);
@@ -147,7 +152,7 @@
 
   window.map = {
     activate: activate,
-    deactivate: deactivate,
+    deactivate: deactivate
   };
 
 })();
