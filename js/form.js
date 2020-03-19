@@ -60,11 +60,11 @@
     price.setAttribute('placeholder', attributeValue);
   };
 
-  var synchronizeTimeIn = function () {
+  var synchronizeTimeInHandler = function () {
     selectTimeOut.value = selectTimeIn.value;
   };
 
-  var synchronizeTimeOut = function () {
+  var synchronizeTimeOutHandler = function () {
     selectTimeIn.value = selectTimeOut.value;
   };
 
@@ -92,12 +92,17 @@
     window.utils.getAddressMainPin();
   };
 
-  var removeMessage = function () {
-    document.removeEventListener('keydown', removeMessage);
+  var removeMessageHandler = function () {
+    document.removeEventListener('keydown', function (evt) {
+      if (evt.key === window.utils.Keys.ESCAPE) {
+        removeMessageHandler();
+      }
+    });
+
     if (window.form.messageErrorButton) {
-      window.form.messageErrorButton.removeEventListener('click', removeMessage);
+      window.form.messageErrorButton.removeEventListener('click', removeMessageHandler);
     }
-    window.form.message.removeEventListener('click', removeMessage);
+    window.form.message.removeEventListener('click', removeMessageHandler);
     document.querySelector('#message').remove();
 
     window.init.disablePage();
@@ -114,9 +119,13 @@
     window.form.messageErrorButton = window.form.message.querySelector('.error__button');
     messageErrorText.textContent = errorText;
 
-    window.form.messageErrorButton.addEventListener('click', removeMessage);
-    document.addEventListener('keydown', removeMessage);
-    window.form.message.addEventListener('click', removeMessage);
+    window.form.messageErrorButton.addEventListener('click', removeMessageHandler);
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === window.utils.Keys.ESCAPE) {
+        removeMessageHandler();
+      }
+    });
+    window.form.message.addEventListener('click', removeMessageHandler);
   };
 
   var successMessage = function () {
@@ -127,8 +136,12 @@
 
     window.form.message = main.querySelector('.success');
 
-    window.form.message.addEventListener('click', removeMessage);
-    document.addEventListener('keydown', removeMessage);
+    window.form.message.addEventListener('click', removeMessageHandler);
+    document.addEventListener('keydown', function (evt) {
+      if (evt.key === window.utils.Keys.ESCAPE) {
+        removeMessageHandler();
+      }
+    });
   };
 
   var success = function () {
@@ -146,8 +159,8 @@
     window.init.disablePage();
   });
   adForm.addEventListener('submit', formSubmitHandler);
-  selectTimeIn.addEventListener('change', synchronizeTimeIn);
-  selectTimeOut.addEventListener('change', synchronizeTimeOut);
+  selectTimeIn.addEventListener('change', synchronizeTimeInHandler);
+  selectTimeOut.addEventListener('change', synchronizeTimeOutHandler);
 
 
   adForm.addEventListener('input', function () {

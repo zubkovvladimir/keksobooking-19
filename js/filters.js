@@ -3,41 +3,71 @@
 (function () {
   var PRICE_LOW = 10000;
   var PRICE_HIGH = 50000;
-  var mapFilters = document.querySelector('.map__filters');
-  var housingType = mapFilters.querySelector('#housing-type');
-  var housingPrice = mapFilters.querySelector('#housing-price');
-  var housingRooms = mapFilters.querySelector('#housing-rooms');
-  var housingGuests = mapFilters.querySelector('#housing-guests');
 
-  var checkPrice = function (elem) {
-    switch (housingPrice.value) {
-      case 'middle':
-        return elem.offer.price >= PRICE_LOW && elem.offer.price <= PRICE_HIGH;
-      case 'low':
-        return elem.offer.price <= PRICE_LOW;
-      case 'high':
-        return elem.offer.price >= PRICE_HIGH;
-      default:
-        return true;
+  var mapFilters = document.querySelector('.map__filters');
+
+  var filterSelects = function (data, value, filterType) {
+    return data.filter(function (item) {
+      return item.offer[filterType].toString() === value;
+    });
+  };
+
+  var priceMap = {
+    'low': function (price) {
+      return price <= PRICE_LOW;
+    },
+    'middle': function (price) {
+      return price >= PRICE_LOW && price <= PRICE_HIGH;
+    },
+    'high': function (price) {
+      return price >= PRICE_HIGH;
     }
   };
 
+  var filterPrice = function (data, priceValue) {
+    return data.filter(function (item) {
+      return priceMap[priceValue](item.offer.price);
+    });
+  };
+
+  var filterFeatures = function (data, featureValue) {
+    return data.filter(function (item) {
+      return item.offer.features.includes(featureValue);
+    });
+  };
+
   var getFiltered = function (arr) {
-    var resultArr = arr.filter(function (elem) {
-      return housingType.value !== 'any' ? elem.offer.type === housingType.value : true;
-    })
-    .filter(checkPrice)
-    .filter(function (elem) {
-      return housingRooms.value !== 'any' ? elem.offer.rooms === parseInt(housingRooms.value, 10) : true;
-    })
-    .filter(function (elem) {
-      return housingGuests.value !== 'any' ? elem.offer.rooms === parseInt(housingGuests.value, 10) : true;
-    })
-    .filter(function (elem) {
-      return housingGuests.value !== 'any' ? elem.offer.rooms === parseInt(housingGuests.value, 10) : true;
+    var selects = mapFilters.querySelectorAll('select');
+    var inputChecked = mapFilters.querySelectorAll('.map__checkbox:checked');
+
+    selects = Array.from(selects).filter(function (it) {
+      return it.value !== 'any';
     });
 
-    return resultArr;
+    var resultArray = arr.slice();
+
+    selects.forEach(function (it) {
+      switch (it.id) {
+        case 'housing-type':
+          resultArray = filterSelects(resultArray, it.value, 'type');
+          break;
+        case 'housing-rooms':
+          resultArray = filterSelects(resultArray, it.value, 'rooms');
+          break;
+        case 'housing-guests':
+          resultArray = filterSelects(resultArray, it.value, 'guests');
+          break;
+        case 'housing-price':
+          resultArray = filterPrice(resultArray, it.value);
+          break;
+      }
+    });
+
+    inputChecked.forEach(function (it) {
+      resultArray = filterFeatures(resultArray, it.value);
+    });
+
+    return resultArray;
   };
 
   window.filters = {

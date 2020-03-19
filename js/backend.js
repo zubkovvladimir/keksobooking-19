@@ -1,9 +1,10 @@
 'use strict';
 
 (function () {
-  var URL = 'https://js.dump.academy/keksobooking';
-  var statusCodeOk = 200;
   var TIMEOUT_IN_MS = 10000;
+  var URL = 'https://js.dump.academy/keksobooking';
+
+  var statusCodeOk = 200;
 
   var setup = function (loadHandler, errorHandler) {
     var xhr = new XMLHttpRequest();
