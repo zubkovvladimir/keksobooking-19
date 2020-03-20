@@ -2,6 +2,7 @@
 
 (function () {
   var MAX_AMOUNT = 5;
+  var FILTER_DEFAULT_VALUE = 'any';
 
   var map = document.querySelector('.map');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -9,8 +10,10 @@
   var mapFilters = mapFiltersContainer.querySelector('.map__filters');
   var mapFiltersSelect = mapFilters.querySelectorAll('.map__filter');
   var mapFiltersFieldset = mapFilters.querySelector('.map__features');
+  var mapCheckbox = mapFilters.querySelectorAll('.map__checkbox');
   var adArray;
   var defaultAdverts = [];
+  var pinClicked;
 
   // отрисовывает фрагмент пинов
   var renderPinFragment = function (arr) {
@@ -47,19 +50,23 @@
     document.addEventListener('keydown', mapCardKeydownHandler);
   };
 
+  var removePinActiveStyle = function () {
+    var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (elem) {
+      elem.classList.remove('map__pin--active');
+    });
+  };
+
   // отображает карточку, при нажатии, на соответствующий пин
   var pinClickHandler = function (evt) {
-    var isClickOnPin = evt.target.classList.contains('map__pin') && !(evt.target.classList.contains('map__pin--main'));
-    var isClickInsidePin = evt.target.closest('.map__pin') && !(evt.target.closest('.map__pin--main'));
+    pinClicked = evt.target.closest('.map__pin:not(.map__pin--main)');
     var adId;
 
-    if (isClickOnPin) {
+    if (pinClicked) {
       closeOpenedCard();
-      adId = evt.target.dataset.id;
-      renderFoundAd(adId);
-    } else if (isClickInsidePin) {
-      closeOpenedCard();
-      adId = evt.target.closest('.map__pin').dataset.id;
+      adId = pinClicked.dataset.id;
+      removePinActiveStyle();
+      pinClicked.classList.add('map__pin--active');
       renderFoundAd(adId);
     }
   };
@@ -72,6 +79,7 @@
       // находит карточку во время вызова функции
       var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
+      removePinActiveStyle();
 
       document.removeEventListener('click', mapCardMousedownHandler);
       document.removeEventListener('keydown', mapCardKeydownHandler);
@@ -84,6 +92,7 @@
       // находит карточку во время вызова функции
       var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
+      removePinActiveStyle();
 
       document.removeEventListener('click', mapCardMousedownHandler);
       document.removeEventListener('keydown', mapCardKeydownHandler);
@@ -115,7 +124,7 @@
 
     closeOpenedCard();
 
-    var arrFiltered = window.filters.getFiltered(defaultAdverts);
+    var arrFiltered = window.filters.get(defaultAdverts);
     renderPinFragment(arrFiltered);
   };
 
@@ -124,10 +133,11 @@
 
     window.backend.load(successLoad, window.form.errorMessage);
 
-    mapFilters.addEventListener('change', function () {
+    mapFilters.addEventListener('change', window.debounce(function () {
       removePins();
       filterPins();
-    });
+    })
+    );
   };
 
   var deactivate = function () {
@@ -140,6 +150,14 @@
 
     removePins();
 
+    mapFiltersSelect.forEach(function (filter) {
+      filter.value = FILTER_DEFAULT_VALUE;
+    });
+
+    mapCheckbox.forEach(function (filter) {
+      filter.checked = false;
+    });
+
     closeOpenedCard();
 
     mapFilters.removeEventListener('change', filterPins);
@@ -147,7 +165,7 @@
 
   window.map = {
     activate: activate,
-    deactivate: deactivate,
+    deactivate: deactivate
   };
 
 })();

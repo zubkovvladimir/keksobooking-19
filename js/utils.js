@@ -2,7 +2,7 @@
 
 (function () {
   var mapPinMain = document.querySelector('.map__pin--main');
-  var mapPinMainStyle = getComputedStyle(document.querySelector('.map__pin--main'));
+  var mapPinMainStyle = getComputedStyle(mapPinMain);
   var pinAfter = getComputedStyle(document.querySelector('.map__pin--main'), ':after');
   var address = document.querySelector('#address');
 
