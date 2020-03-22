@@ -5,6 +5,7 @@
   var STATUS_CODE_OK = 200;
   var URL = 'https://js.dump.academy/keksobooking';
 
+
   var setup = function (loadHandler, errorHandler) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';

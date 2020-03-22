@@ -2,7 +2,6 @@
 
 (function () {
   var MAX_AMOUNT = 5;
-  var FILTER_DEFAULT = 'any';
 
   var mapFilters = document.querySelector('.map__filters');
 
@@ -53,7 +52,7 @@
     var housingRooms = mapFilters.querySelector('#housing-rooms');
     var housingGuests = mapFilters.querySelector('#housing-guests');
     var featuresChecked = mapFilters.querySelectorAll('.map__checkbox:checked');
-    var filteredAdverts = [];
+    var filteredArray = [];
 
     for (var i = 0; i < array.length; i++) {
       if (checkByType(housingType, array[i]) &&
@@ -61,14 +60,14 @@
           checkByRooms(housingRooms, array[i]) &&
           checkByGuests(housingGuests, array[i]) &&
           checkByFeatures(featuresChecked, array[i])) {
-        filteredAdverts.push(array[i]);
-        if (filteredAdverts.length === MAX_AMOUNT) {
+        filteredArray.push(array[i]);
+        if (filteredArray.length === MAX_AMOUNT) {
           break;
         }
       }
     }
 
-    return filteredAdverts;
+    return filteredArray;
   };
 
   window.filters = {
