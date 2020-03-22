@@ -10,7 +10,8 @@
 
   var rangeRight = Math.round((parseInt(mapWidth.width, 10) - (parseInt(mapPinMainStyle.width, 10) / 2)));
   var rangeLeft = Math.round(0 - (parseInt(mapPinMainStyle.width, 10) / 2));
-
+  var rangeTop = RANGE_TOP - window.utils.MAIN_PIN.height - window.utils.MAIN_PIN.tail;
+  var rangeBottom = RANGE_BOTTOM - window.utils.MAIN_PIN.height - window.utils.MAIN_PIN.tail;
   var mouseDragHandler = function (evt) {
     var startCoords = {
       x: evt.clientX,
@@ -39,10 +40,10 @@
         shiftX = rangeLeft;
       }
 
-      if (shiftY < RANGE_TOP) {
-        shiftY = RANGE_TOP;
-      } else if (shiftY >= RANGE_BOTTOM) {
-        shiftY = RANGE_BOTTOM;
+      if (shiftY < rangeTop) {
+        shiftY = rangeTop;
+      } else if (shiftY >= rangeBottom) {
+        shiftY = rangeBottom;
       }
 
       mapPinMain.style.top = shiftY + 'px';

@@ -1,9 +1,13 @@
 'use strict';
 
 (function () {
+  var MAIN_PIN = {
+    width: 65,
+    height: 65,
+    tail: 15
+  };
+
   var mapPinMain = document.querySelector('.map__pin--main');
-  var mapPinMainStyle = getComputedStyle(document.querySelector('.map__pin--main'));
-  var pinAfter = getComputedStyle(document.querySelector('.map__pin--main'), ':after');
   var address = document.querySelector('#address');
 
   var Keys = {
@@ -33,10 +37,10 @@
   };
 
   var getAddressMainPin = function (isTail) {
-    var fullHeight = isTail ? parseInt(mapPinMainStyle.height, 10) + parseInt(pinAfter.height, 10)
-      : Math.round(parseInt(mapPinMainStyle.height, 10) / 2);
+    var fullHeight = isTail ? parseInt(MAIN_PIN.height, 10) + parseInt(MAIN_PIN.tail, 10)
+      : Math.round(parseInt(MAIN_PIN.height, 10) / 2);
 
-    address.value = parseInt(mapPinMain.style.left, 10) + Math.round(parseInt(mapPinMainStyle.width, 10) / 2) + ', '
+    address.value = parseInt(mapPinMain.style.left, 10) + Math.floor(parseInt(MAIN_PIN.width, 10) / 2) + ', '
        + (parseInt(mapPinMain.style.top, 10) + parseInt(fullHeight, 10));
   };
 
@@ -45,6 +49,7 @@
     getRandomLengthArray: getRandomLengthArray,
     disableElements: disableElements,
     getAddressMainPin: getAddressMainPin,
-    Keys: Keys
+    Keys: Keys,
+    MAIN_PIN: MAIN_PIN
   };
 })();
