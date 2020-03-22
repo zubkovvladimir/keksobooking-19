@@ -2,6 +2,7 @@
 
 (function () {
   var MAX_AMOUNT = 5;
+  var FILTER_DEFAULT = 'any';
 
   var mapFilters = document.querySelector('.map__filters');
 
