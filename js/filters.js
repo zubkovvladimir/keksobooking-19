@@ -8,69 +8,67 @@
 
   var PriceValues = {
     'low': {
-      min: 0,
-      max: 10000
+      MIN: 0,
+      MAX: 10000
     },
 
     'middle': {
-      min: 10000,
-      max: 50000
+      MIN: 10000,
+      MAX: 50000
     },
 
     'high': {
-      min: 50000,
-      max: Infinity
+      MIN: 50000,
+      MAX: Infinity
     }
   };
 
-  var getFilterValues = function () {
-    var filterInputs = mapFilters.querySelectorAll('.map__filter, input[type=checkbox]:checked');
-    var filterValues = [];
-
-    filterInputs.forEach(function (filter) {
-      filterValues.push({
-        name: filter.getAttribute('name'),
-        value: filter.value
-      });
-    });
-
-    return filterValues;
+  var checkByType = function (type, data) {
+    return type.value !== 'any' ? type.value === data.offer.type : true;
   };
 
-  var checkFeature = function (features, value) {
-    return features.some(function (feature) {
-      return feature === value;
-    });
+  var checkByPrice = function (price, data) {
+    return price.value !== 'any' ? data.offer.price >= PriceValues[price.value].min && data.offer.price < PriceValues[price.value].max : true;
   };
 
-  var FilterRules = {
-    'housing-type': function (offer, value) {
-      return offer.type === value;
-    },
+  var checkByRooms = function (rooms, data) {
+    return rooms.value !== 'any' ? parseInt(rooms.value, 10) === data.offer.rooms : true;
+  };
 
-    'housing-price': function (offer, value) {
-      return offer.price >= PriceValues[value].min && offer.price < PriceValues[value].max;
-    },
+  var checkByGuests = function (guests, data) {
+    return guests.value !== 'any' ? parseInt(guests.value, 10) === data.offer.guests : true;
+  };
 
-    'housing-rooms': function (offer, value) {
-      return offer.rooms === parseInt(value, 10);
-    },
-
-    'housing-guests': function (offer, value) {
-      return offer.guests === parseInt(value, 10);
-    },
-
-    'features': function (offer, value) {
-      return checkFeature(offer.features, value);
-    },
+  var checkByFeatures = function (features, data) {
+    var flag = true;
+    features.forEach(function (feature) {
+      flag = flag && data.offer.features.includes(feature.value);
+    });
+    return flag;
   };
 
   var filterAd = function (array) {
-    return array.filter(function (ad) {
-      return ad.offer && getFilterValues().every(function (element) {
-        return (element.value !== FILTER_DEFAULT) ? FilterRules[element.name](ad.offer, element.value) : true;
-      });
-    }).slice(0, MAX_AMOUNT);
+    var housingType = mapFilters.querySelector('#housing-type');
+    var housingPrice = mapFilters.querySelector('#housing-price');
+    var housingRooms = mapFilters.querySelector('#housing-rooms');
+    var housingGuests = mapFilters.querySelector('#housing-guests');
+    var featuresChecked = mapFilters.querySelectorAll('.map__checkbox:checked');
+    var filteredArray = [];
+
+    for (var i = 0; i < array.length; i++) {
+      if (checkByType(housingType, array[i]) &&
+          checkByPrice(housingPrice, array[i]) &&
+          checkByRooms(housingRooms, array[i]) &&
+          checkByGuests(housingGuests, array[i]) &&
+          checkByFeatures(featuresChecked, array[i])) {
+        filteredArray.push(array[i]);
+        if (filteredArray.length === MAX_AMOUNT) {
+          break;
+        }
+      }
+    }
+
+    return filteredArray;
   };
 
   window.filters = {

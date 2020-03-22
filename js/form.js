@@ -19,21 +19,21 @@
   var main = document.body.querySelector('main');
 
   var OffsetTypeMap = {
-    palace: {
-      label: 'Дворец',
-      minPrice: 10000
+    PALACE: {
+      LABEL: 'Дворец',
+      MIN_PRICE: 10000
     },
-    flat: {
-      label: 'Квартира',
-      minPrice: 1000
+    FLAT: {
+      LABEL: 'Квартира',
+      MIN_PRICE: 1000
     },
-    house: {
-      label: 'Дом',
-      minPrice: 5000
+    HOUSE: {
+      LABEL: 'Дом',
+      MIN_PRICE: 5000
     },
-    bungalo: {
-      label: 'Бунгало',
-      minPrice: 0
+    BUNGALO: {
+      LABEL: 'Бунгало',
+      MIN_PRICE: 0
     }
   };
 

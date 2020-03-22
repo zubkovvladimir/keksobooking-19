@@ -2,9 +2,8 @@
 
 (function () {
   var TIMEOUT_IN_MS = 10000;
+  var STATUS_CODE_OK = 200;
   var URL = 'https://js.dump.academy/keksobooking';
-
-  var statusCodeOk = 200;
 
   var setup = function (loadHandler, errorHandler) {
     var xhr = new XMLHttpRequest();
@@ -13,7 +12,7 @@
     xhr.timeout = TIMEOUT_IN_MS;
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === statusCodeOk) {
+      if (xhr.status === STATUS_CODE_OK) {
         loadHandler(xhr.response);
       } else {
         errorHandler('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
