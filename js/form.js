@@ -54,7 +54,7 @@
 
   var checkValidRoomsType = function () {
     var typeValue = roomType.value;
-    var attributeValue = OffsetTypeMap[typeValue].minPrice;
+    var attributeValue = OffsetTypeMap[typeValue.toUpperCase()].MIN_PRICE;
 
     price.setAttribute('min', attributeValue);
     price.setAttribute('placeholder', attributeValue);

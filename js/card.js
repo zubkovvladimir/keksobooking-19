@@ -43,7 +43,7 @@
     title.textContent = cardAd.offer.title || title.remove();
     address.textContent = cardAd.offer.address || address.remove();
     price.textContent = cardAd.offer.price ? cardAd.offer.price + ' ₽/ночь' : price.remove();
-    type.textContent = window.form.offsetTypeMap[cardAd.offer.type].label || type.remove();
+    type.textContent = window.form.offsetTypeMap[cardAd.offer.type.toUpperCase()].LABEL || type.remove();
     capacity.textContent = cardAd.offer.rooms ? cardAd.offer.rooms + ' комнаты для ' + cardAd.offer.guests + ' гостей' : capacity.remove();
     time.textContent = cardAd.offer.checkin && cardAd.offer.checkout ? 'Заезд после ' + cardAd.offer.checkin + ', выезд до ' + cardAd.offer.checkout : time.remove();
 
