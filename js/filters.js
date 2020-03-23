@@ -11,19 +11,19 @@
   var housingGuests = mapFilters.querySelector('#housing-guests');
 
   var PriceValues = {
-    'low': {
-      MIN: 0,
-      MAX: 10000
+    'LOW': {
+      min: 0,
+      max: 10000
     },
 
-    'middle': {
-      MIN: 10000,
-      MAX: 50000
+    'MIDDLE': {
+      min: 10000,
+      max: 50000
     },
 
-    'high': {
-      MIN: 50000,
-      MAX: Infinity
+    'HIGH': {
+      min: 50000,
+      max: Infinity
     }
   };
 
@@ -32,7 +32,7 @@
   };
 
   var checkByPrice = function (price, data) {
-    return price.value !== FILTER_DEFAULT ? data.offer.price >= PriceValues[price.value].MIN && data.offer.price < PriceValues[price.value].MAX : true;
+    return price.value !== FILTER_DEFAULT ? data.offer.price >= PriceValues[price.value.toUpperCase()].min && data.offer.price < PriceValues[price.value.toUpperCase()].max : true;
   };
 
   var checkByRooms = function (rooms, data) {

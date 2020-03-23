@@ -20,20 +20,20 @@
 
   var OffsetTypeMap = {
     PALACE: {
-      LABEL: 'Дворец',
-      MIN_PRICE: 10000
+      label: 'Дворец',
+      minPrice: 10000
     },
     FLAT: {
-      LABEL: 'Квартира',
-      MIN_PRICE: 1000
+      label: 'Квартира',
+      minPrice: 1000
     },
     HOUSE: {
-      LABEL: 'Дом',
-      MIN_PRICE: 5000
+      label: 'Дом',
+      minPrice: 5000
     },
     BUNGALO: {
-      LABEL: 'Бунгало',
-      MIN_PRICE: 0
+      label: 'Бунгало',
+      minPrice: 0
     }
   };
 
@@ -54,7 +54,7 @@
 
   var checkValidRoomsType = function () {
     var typeValue = roomType.value;
-    var attributeValue = OffsetTypeMap[typeValue.toUpperCase()].MIN_PRICE;
+    var attributeValue = OffsetTypeMap[typeValue.toUpperCase()].minPrice;
 
     price.setAttribute('min', attributeValue);
     price.setAttribute('placeholder', attributeValue);
