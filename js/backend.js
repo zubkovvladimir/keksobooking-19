@@ -3,7 +3,7 @@
 (function () {
   var TIMEOUT_IN_MS = 10000;
   var STATUS_CODE_OK = 200;
-  var URL = 'https://js.dump.academy/keksobooking';
+  var URL = 'https://javascript.pages.academy/keksobooking';
 
 
   var setup = function (loadHandler, errorHandler) {
