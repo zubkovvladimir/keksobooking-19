@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MOUSE_KEY_LEFT = 0;
   var MAIN_PIN = {
     width: 65,
     height: 65,
@@ -44,11 +45,29 @@
        + (parseInt(mapPinMain.style.top, 10) + parseInt(fullHeight, 10));
   };
 
-  window.utils = {
+  // проверяет нажатие клавиши энтер
+
+  var isEnterEvent = function (evt, action) {
+    if (evt.key === Keys.ENTER) {
+      action();
+    }
+  };
+
+  // проверяет нажатие левой мышки
+
+  var isMouseLeftEvent = function (evt, action) {
+    if (evt.button === MOUSE_KEY_LEFT) {
+      action();
+    }
+  };
+
+  window.util = {
     getRandomNumber: getRandomNumber,
     getRandomLengthArray: getRandomLengthArray,
     disableElements: disableElements,
     getAddressMainPin: getAddressMainPin,
+    isEnterEvent: isEnterEvent,
+    isMouseLeftEvent: isMouseLeftEvent,
     Keys: Keys,
     MAIN_PIN: MAIN_PIN
   };

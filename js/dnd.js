@@ -10,8 +10,8 @@
 
   var rangeRight = Math.round((parseInt(mapWidth.width, 10) - (parseInt(mapPinMainStyle.width, 10) / 2)));
   var rangeLeft = Math.round(0 - (parseInt(mapPinMainStyle.width, 10) / 2));
-  var rangeTop = RANGE_TOP - window.utils.MAIN_PIN.height - window.utils.MAIN_PIN.tail;
-  var rangeBottom = RANGE_BOTTOM - window.utils.MAIN_PIN.height - window.utils.MAIN_PIN.tail;
+  var rangeTop = RANGE_TOP - window.util.MAIN_PIN.height - window.util.MAIN_PIN.tail;
+  var rangeBottom = RANGE_BOTTOM - window.util.MAIN_PIN.height - window.util.MAIN_PIN.tail;
   var mouseDragHandler = function (evt) {
     var startCoords = {
       x: evt.clientX,
@@ -49,13 +49,13 @@
       mapPinMain.style.top = shiftY + 'px';
       mapPinMain.style.left = shiftX + 'px';
 
-      window.utils.getAddressMainPin(true);
+      window.util.getAddressMainPin(true);
     };
 
     var mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
 
-      window.utils.getAddressMainPin(true);
+      window.util.getAddressMainPin(true);
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
     };

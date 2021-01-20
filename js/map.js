@@ -88,7 +88,7 @@
 
   // закрывает попап по нажатию на ескейп
   var mapCardKeydownHandler = function (evt) {
-    if (evt.key === window.utils.Keys.ESCAPE) {
+    if (evt.key === window.util.Keys.ESCAPE) {
       // находит карточку во время вызова функции
       var mapCard = map.querySelector('.map__card');
       map.removeChild(mapCard);
@@ -142,7 +142,7 @@
 
   var deactivate = function () {
     // проходит по селектам и проставляет disabled
-    window.utils.disableElements(mapFiltersSelect);
+    window.util.disableElements(mapFiltersSelect);
 
     mapFiltersFieldset.disabled = true;
 

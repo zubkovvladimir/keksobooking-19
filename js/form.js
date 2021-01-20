@@ -83,18 +83,18 @@
 
   var deactivate = function () {
     // проходит по филдсетам и проставляет disabled
-    window.utils.disableElements(formFieldset);
+    window.util.disableElements(formFieldset);
 
     adForm.classList.add('ad-form--disabled');
 
     resetForm();
 
-    window.utils.getAddressMainPin();
+    window.util.getAddressMainPin();
   };
 
   var removeMessageHandler = function () {
     document.removeEventListener('keydown', function (evt) {
-      if (evt.key === window.utils.Keys.ESCAPE) {
+      if (evt.key === window.util.Keys.ESCAPE) {
         removeMessageHandler();
       }
     });
@@ -121,7 +121,7 @@
 
     window.form.messageErrorButton.addEventListener('click', removeMessageHandler);
     document.addEventListener('keydown', function (evt) {
-      if (evt.key === window.utils.Keys.ESCAPE) {
+      if (evt.key === window.util.Keys.ESCAPE) {
         removeMessageHandler();
       }
     });
@@ -138,7 +138,7 @@
 
     window.form.message.addEventListener('click', removeMessageHandler);
     document.addEventListener('keydown', function (evt) {
-      if (evt.key === window.utils.Keys.ESCAPE) {
+      if (evt.key === window.util.Keys.ESCAPE) {
         removeMessageHandler();
       }
     });

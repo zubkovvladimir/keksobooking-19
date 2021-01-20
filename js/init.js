@@ -1,8 +1,11 @@
 'use strict';
 
 (function () {
-  var mapPinMain = document.querySelector('.map__pin--main');
-  var mapPinMainPosition = 'left: ' + mapPinMain.style.left + '; top: ' + mapPinMain.style.top + ';';
+  var mainPin = document.querySelector('.map__pin--main');
+  var mainPinStartPosition = 'left: ' + mainPin.style.left + '; top: ' + mainPin.style.top + ';';
+
+  var isEnterEvent = window.util.isEnterEvent;
+  var isMouseLeftEvent = window.util.isMouseLeftEvent;
 
   var activatePage = function () {
     window.form.activate();
@@ -10,30 +13,27 @@
   };
 
   var disablePage = function () {
-    mapPinMain.style = mapPinMainPosition;
+    mainPin.style = mainPinStartPosition;
     window.form.deactivate();
-    window.map.deactivate();
+    window.map.deactivate();  
 
-    mapPinMain.addEventListener('mousedown', isMainPinHandler);
-    mapPinMain.addEventListener('keydown', isMainPinHandler);
+    mainPin.addEventListener('mousedown', isMainPinClickHandler);
+    mainPin.addEventListener('keydown', isMainPinKeydownHandler);
+  };
+
+  var isMainPinClickHandler = function (evt) {
+    isMouseLeftEvent(evt, activatePage);
+    mainPin.removeEventListener('mousedown', isMainPinClickHandler);
+  };
+
+  var isMainPinKeydownHandler = function (evt) {
+    isEnterEvent(evt, activatePage);  
+    mainPin.removeEventListener('keydown', isMainPinKeydownHandler);
   };
 
   disablePage();
 
-  var isMainPinHandler = function (evt) {
-    if (evt.button === 0 || evt.key === window.utils.Keys.ENTER) {
-      activatePage();
-    }
-
-    mapPinMain.removeEventListener('mousedown', isMainPinHandler);
-    mapPinMain.removeEventListener('keydown', isMainPinHandler);
-  };
-
-  mapPinMain.addEventListener('mousedown', isMainPinHandler);
-  mapPinMain.addEventListener('keydown', isMainPinHandler);
-
   window.init = {
-    activatePage: activatePage,
-    disablePage: disablePage,
+    disablePage: disablePage
   };
 })();
