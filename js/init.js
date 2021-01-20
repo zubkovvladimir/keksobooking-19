@@ -6,6 +6,7 @@
 
   var isEnterEvent = window.util.isEnterEvent;
   var isMouseLeftEvent = window.util.isMouseLeftEvent;
+  var uploadRemove = window.avatar.uploadRemove;
 
   var activatePage = function () {
     window.form.activate();
@@ -16,6 +17,7 @@
     mainPin.style = mainPinStartPosition;
     window.form.deactivate();
     window.map.deactivate();  
+    uploadRemove();
 
     mainPin.addEventListener('mousedown', isMainPinClickHandler);
     mainPin.addEventListener('keydown', isMainPinKeydownHandler);
