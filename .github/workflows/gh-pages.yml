@@ -1,0 +1,27 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  gh-pages-deploy:
+    name: Deploying to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js for use with actions
+        uses: actions/setup-node@v2-beta
+        with:
+          version: 14.x
+      - name: Checkout branch
+        uses: actions/checkout@v2
+
+      - name: Clean install dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npx ember build
+
+      - name: Run deploy script
+        run: sh ./scripts/deploy-to-gh-pages.sh
